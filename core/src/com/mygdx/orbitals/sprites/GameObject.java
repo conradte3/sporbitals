@@ -34,7 +34,7 @@ public abstract class GameObject {
     }
 
     public GameObject(Vector2 position, Texture sprite) {
-        this.position = position;
+        this.position = new Vector2(position);
         this.sprite = sprite;
         bounds = new Circle(position.x, position.y, sprite.getWidth() * scale / 3);
         GameStateManager.getCurrent().addGameObject(this);
@@ -81,4 +81,6 @@ public abstract class GameObject {
     public Circle getBounds() {
         return bounds;
     }
+
+
 }

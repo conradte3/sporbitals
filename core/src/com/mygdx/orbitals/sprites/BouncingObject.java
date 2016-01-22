@@ -39,20 +39,11 @@ public abstract class BouncingObject extends GameObject {
         this.boundaries = boundaries;
     }
 
-    protected Vector2 V2Rotate(Vector2 v, float angle) {
-        Vector2 result = new Vector2();
-
-        result.x = (float)(v.x * Math.cos(angle) - v.y * Math.sin(angle));
-        result.y = (float)(v.x * Math.sin(angle) + v.y * Math.cos(angle));
-
-        return result;
-    }
-
     @Override
     public void update(float dt) {
         super.update(dt);
-        position.x += velocity.x*levelMod*speed*powerMod*dt;
-        position.y += velocity.y*levelMod*speed*powerMod*dt;
+
+        move(dt);
 
         if (position.x > boundaries.getWidth()) {
             velocity.x *= -1;
@@ -69,6 +60,11 @@ public abstract class BouncingObject extends GameObject {
             velocity.y *= -1;
             position.y = boundaries.getY();
         }
+    }
+
+    public void move(float dt) {
+        position.x += velocity.x*levelMod*speed*powerMod*dt;
+        position.y += velocity.y*levelMod*speed*powerMod*dt;
     }
 
     public static void setLevelMod(double levelMod) {

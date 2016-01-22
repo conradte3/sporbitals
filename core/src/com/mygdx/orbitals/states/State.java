@@ -25,11 +25,12 @@ public abstract class State {
     protected OrthographicCamera cam;
     private Texture background;
     protected Vector2 mouse;
+    protected Vector2 mouse2;
     protected Vector2 tilt;
     protected PolyList<GameObject> gameObjects;
     List<GameObject> deadObjects;
     protected double timePassed;
-    protected int controls = 0;
+    protected static int controls = 0;
     FPSLogger logger;
     private Vector3 tempVec;
 
@@ -40,6 +41,7 @@ public abstract class State {
 
     protected State(Texture bg) {
         mouse = new Vector2();
+        mouse2 = new Vector2();
         tilt = new Vector2();
         gameObjects = new PolyList<GameObject>(GameObject.class);
         deadObjects = new ArrayList<GameObject>();
@@ -87,6 +89,9 @@ public abstract class State {
         mouse.x = Gdx.input.getX();
         mouse.y = Gdx.input.getY();
 
+        mouse2.x = Gdx.input.getX(1);
+        mouse2.y = Gdx.input.getY(1);
+
         tilt.x = Gdx.input.getAccelerometerX() / 10;
         tilt.y = Gdx.input.getAccelerometerY() / 10;
     }
@@ -110,16 +115,21 @@ public abstract class State {
         tempVec = cam.unproject(tempVec.set(mouse.x, mouse.y, 0));
         return new Vector2(tempVec.x, tempVec.y);
     }
+
+    public Vector2 getMouse2() {
+        tempVec = cam.unproject(tempVec.set(mouse2.x, mouse2.y, 0));
+        return new Vector2(tempVec.x, tempVec.y);
+    }
     public Vector2 getTilt() { return new Vector2(tilt.x, tilt.y); }
 
-    public void changeControls() {
+    public static void changeControls() {
         controls += 1;
-        if (controls > 2) {
+        if (controls > 3) {
             controls = 0;
         }
     }
 
-    public int getControls() {
+    public static int getControls() {
         return controls;
     }
 

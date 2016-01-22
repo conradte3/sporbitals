@@ -2,7 +2,7 @@ package com.mygdx.orbitals.helpers;
 
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.orbitals.states.GameStateManager;
+import com.mygdx.orbitals.states.State;
 
 /**
  * Created by Conrad on 11/21/2015.
@@ -17,7 +17,7 @@ public class MyGestureListener implements GestureDetector.GestureListener {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        GameStateManager.getCurrent().changeControls();
+        State.changeControls();
         return false;
     }
 

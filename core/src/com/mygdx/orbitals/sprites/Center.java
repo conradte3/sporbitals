@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.orbitals.GdxOrbitals;
 import com.mygdx.orbitals.helpers.Constants;
 import com.mygdx.orbitals.states.GameStateManager;
+import com.mygdx.orbitals.states.State;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +44,13 @@ public class Center extends GameObject {
         angle = 0;
         incBy = -10f;
         orbitals = new ArrayList<Orbital>();
-        changeLevel(UP);
         point = position;
     }
 
     @Override
     public void update(float dt) {
         super.update(dt);
-        int controls = GameStateManager.getCurrent().getControls();
+        int controls = State.getControls();
 
         if (controls == 2) { //tilt
             speed = -75;
@@ -60,7 +60,14 @@ public class Center extends GameObject {
         } else {
             speed = 0.04;
             //update position based on input
-            Vector2 mouse = GameStateManager.getCurrent().getMouse();
+            Vector2 mouse = new Vector2();
+
+            if (controls == 3) {
+                mouse.x = GameStateManager.getCurrent().getMouse().x;
+                mouse.y = GameStateManager.getCurrent().getMouse2().y;
+            } else {
+                mouse = GameStateManager.getCurrent().getMouse();
+            }
             if (controls == 1) { //dpad
                 if (Gdx.input.justTouched()) {
                     point = mouse;
@@ -100,7 +107,7 @@ public class Center extends GameObject {
         }
 
         //update sporbitals
-        incBy = - (float) Orbital.getPowerMod() * 1f / (level * 3 + 5);
+        incBy = - (float) Orbital.getPowerMod() * 0.7f / (level * 3 + 5);
         angle += incBy * 60 * dt;
 
         if (orbAdded) {
@@ -110,7 +117,7 @@ public class Center extends GameObject {
             if (PowerUp.isActive) {
                 radius = MAX_RADIUS;
             } else {
-                Spawner spawner = (Spawner)GameStateManager.getCurrent().getElements(Spawner.class).get(0);
+                /*Spawner spawner = (Spawner)GameStateManager.getCurrent().getElements(Spawner.class).get(0);
                 double dist = Math.hypot(position.x - spawner.getPosition().x, position.y - spawner.getPosition().y);
                 dist = Math.min(dist, MAX_DIST);
                 radius -= dt * 40 / level * Math.cos((dist / MAX_DIST) * Math.PI) * scale;
@@ -119,7 +126,7 @@ public class Center extends GameObject {
                     changeLevel(UP);
                 } else if (radius >= MAX_RADIUS) {
                     radius = MAX_RADIUS;
-                }
+                }*/
             }
         }
         updateOrbs();
@@ -150,7 +157,7 @@ public class Center extends GameObject {
     @Override
     public void render(SpriteBatch sb) {
         super.render(sb);
-        if (GameStateManager.getCurrent().getControls() == 1) {
+        if (State.getControls() == 1) {
             sb.begin();
             sb.draw(dpad1, point.x - dpad1.getWidth() / 2, point.y - dpad1.getHeight() / 2);
             sb.draw(dpad2, point.x, point.y);
@@ -166,10 +173,12 @@ public class Center extends GameObject {
     }
 
     public void changeLevel(int dir) {
-        changeLevel(dir, 0);
+        changeLevel(dir, orbitals.size() + Math.min(dir, 0));
     }
 
     public void changeLevel(int dir, int orbID) {
+        Spawner spawner = (Spawner)GameStateManager.getCurrent().getElements(Spawner.class).get(0);
+
         level += dir;
 
         if (level <= 0) {
@@ -178,17 +187,20 @@ public class Center extends GameObject {
                 PowerUp pu = (PowerUp) go;
                 pu.deactivate();
             }
-            GameStateManager.remove();
+            level = 0;
         }
 
         if (dir > 0) {
+            if (level == 1) {
+                spawner.setHasFirstOrb(true);
+            }
+            spawner.setBoundaryHeight(GdxOrbitals.HEIGHT * (5 - level) / 5f);
             addOrbital();
-            new PowerUp();
         } else {
             removeOrbital(orbID);
         }
 
-        BouncingObject.setLevelMod(level * 0.1 + 1);
+        BouncingObject.setLevelMod(level * 0.25 + 0.75);
     }
 
     public void addOrbital() {

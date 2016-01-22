@@ -1,6 +1,7 @@
 package com.mygdx.orbitals.states;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.orbitals.GdxOrbitals;
@@ -22,13 +23,18 @@ import javafx.util.Pair;
  * Created by Conrad on 10/17/2015.
  */
 public class PlayState extends State {
-    private final Colliders[] colliders = {
-            new Colliders(Enemy.class, Orbital.class),
+    protected final Colliders[] colliders = {
+            new Colliders(Orbital.class, BouncingObject.class),
             new Colliders(Center.class, BouncingObject.class)
     };
 
+    protected BitmapFont font;
+    protected float score;
+
     public PlayState() {
         super(new Texture(Constants.BACKGROUND_IMG));
+        font = new BitmapFont();
+        score = 0;
     }
 
     @Override
@@ -43,7 +49,7 @@ public class PlayState extends State {
         render(batch);
         super.update(dt, batch);
         checkCollisions();
-
+        score += dt;
 
         //        //Objects that die in collisions
 //        List<GameObject> deadObjects = new ArrayList<GameObject>();
@@ -75,6 +81,15 @@ public class PlayState extends State {
 //        }
     }
 
+    @Override
+    public void render(SpriteBatch sb) {
+        super.render(sb);
+
+        sb.begin();
+        font.draw(sb, Integer.toString(Math.round(score)), 10, GdxOrbitals.HEIGHT - 10, GdxOrbitals.WIDTH - 10, 1, true);
+        sb.end();
+    }
+
     private void checkCollisions() {
         for (Colliders cldrs : colliders) {
             for (GameObject x : gameObjects.elements(cldrs.getX())) {
@@ -91,8 +106,8 @@ public class PlayState extends State {
 }
 
 class Colliders {
-    Class<? extends GameObject> x;
-    Class<? extends GameObject> y;
+    private Class<? extends GameObject> x;
+    private Class<? extends GameObject> y;
 
     Colliders() {
         this(GameObject.class, GameObject.class);
