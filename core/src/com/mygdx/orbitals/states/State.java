@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.orbitals.GdxOrbitals;
@@ -27,6 +28,7 @@ public abstract class State {
     protected Vector2 mouse;
     protected Vector2 mouse2;
     protected Vector2 tilt;
+    protected Vector2 offset;
     protected PolyList<GameObject> gameObjects;
     List<GameObject> deadObjects;
     protected double timePassed;
@@ -34,6 +36,8 @@ public abstract class State {
     FPSLogger logger;
     private Vector3 tempVec;
 
+    Vector3 tiltCalibration;
+    Matrix4 calibrationMatrix;
 
     protected State() {
         this(new Texture(Constants.DEFAULT_IMG));
@@ -43,6 +47,7 @@ public abstract class State {
         mouse = new Vector2();
         mouse2 = new Vector2();
         tilt = new Vector2();
+        offset = new Vector2();
         gameObjects = new PolyList<GameObject>(GameObject.class);
         deadObjects = new ArrayList<GameObject>();
         timePassed = 0; //time that the state has been active
@@ -51,6 +56,9 @@ public abstract class State {
         cam.setToOrtho(false, GdxOrbitals.WIDTH, GdxOrbitals.HEIGHT);
         background = bg;
         tempVec = new Vector3();
+
+        tiltCalibration = new Vector3();
+        calibrationMatrix = new Matrix4();
     }
 
     protected void start() {
@@ -92,8 +100,8 @@ public abstract class State {
         mouse2.x = Gdx.input.getX(1);
         mouse2.y = Gdx.input.getY(1);
 
-        tilt.x = Gdx.input.getAccelerometerX() / 10;
-        tilt.y = Gdx.input.getAccelerometerY() / 10;
+        tilt.x = Gdx.input.getAccelerometerX();
+        tilt.y = Gdx.input.getAccelerometerY();
     }
 
     public void addGameObject(GameObject go) {
@@ -120,7 +128,11 @@ public abstract class State {
         tempVec = cam.unproject(tempVec.set(mouse2.x, mouse2.y, 0));
         return new Vector2(tempVec.x, tempVec.y);
     }
-    public Vector2 getTilt() { return new Vector2(tilt.x, tilt.y); }
+    public Vector2 getTilt() {
+        //Vector3 tmp = new Vector3(Gdx.input.getAccelerometerX(), Gdx.input.getAccelerometerY(), Gdx.input.getAccelerometerZ());
+        //tmp.mul(calibrationMatrix);
+        return new Vector2(tilt.x - offset.x, tilt.y - offset.y);
+    }
 
     public static void changeControls() {
         controls += 1;

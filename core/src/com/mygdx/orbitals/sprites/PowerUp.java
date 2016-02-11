@@ -47,9 +47,6 @@ public class PowerUp extends BouncingObject {
         startTime = GameStateManager.getCurrent().getTimePassed();
         sprite = new Texture(Constants.DEFAULT_IMG);
 
-        Orbital.setPowerMod(0.2);
-        BouncingObject.setPowerMod(0.4);
-
         for (GameObject enemy : GameStateManager.getCurrent().getElements(Enemy.class)) {
             enemy.setSprite(new Texture(Constants.ENEMY2_IMG));
         }
@@ -61,9 +58,6 @@ public class PowerUp extends BouncingObject {
 
     public void deactivate() {
         isActive = false;
-
-        Orbital.setPowerMod(1);
-        BouncingObject.setPowerMod(1);
 
         for (GameObject enemy : GameStateManager.getCurrent().getElements(Enemy.class)) {
             enemy.setSprite(new Texture(Constants.ENEMY_IMG));

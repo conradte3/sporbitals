@@ -13,7 +13,6 @@ import com.mygdx.orbitals.helpers.Constants;
 public abstract class BouncingObject extends GameObject {
     protected float speed = GdxOrbitals.HEIGHT / 3;
     protected static double levelMod = 1;
-    protected static double powerMod = 1;
     protected Vector2 velocity;
     protected Rectangle boundaries;
 
@@ -63,15 +62,11 @@ public abstract class BouncingObject extends GameObject {
     }
 
     public void move(float dt) {
-        position.x += velocity.x*levelMod*speed*powerMod*dt;
-        position.y += velocity.y*levelMod*speed*powerMod*dt;
+        position.x += velocity.x*levelMod*speed*dt;
+        position.y += velocity.y*levelMod*speed*dt;
     }
 
     public static void setLevelMod(double levelMod) {
         BouncingObject.levelMod = levelMod;
-    }
-
-    public static void setPowerMod(double powerMod) {
-        BouncingObject.powerMod = powerMod;
     }
 }

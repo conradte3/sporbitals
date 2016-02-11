@@ -32,10 +32,15 @@ public class Enemy extends BouncingObject {
     @Override
     public void move(float dt) {
         Vector2 v = new Vector2(velocity);
-        Center c = (Center)GameStateManager.getCurrent().getElements(Center.class).get(0);
 
-        //v.x += 0.001 * (c.getPosition().x - position.x);
-        //v.y += 0.001 * (c.getPosition().y - position.y);
+        /*homing
+        Center c = (Center)GameStateManager.getCurrent().getElements(Center.class).get(0);
+        double adj = position.x - c.getPosition().x;
+        double opp = position.y - c.getPosition().y;
+        double ang = Math.atan2(opp, adj);
+        v.x = (float)Math.cos(ang) * -0.7f;
+        v.y = (float)Math.sin(ang) * -0.7f;
+        */
 
         /*waving
         v.rotateRad((float)Math.cos(count % (2 * Math.PI)));
@@ -46,8 +51,9 @@ public class Enemy extends BouncingObject {
         v.rotateRad(count);// * (float) Math.cos(count % (2 * Math.PI)));
         count += 0.05f;
         */
-        position.x += v.x*levelMod*speed*powerMod*dt;
-        position.y += v.y*levelMod*speed*powerMod*dt;
+
+        position.x += v.x*levelMod*speed*dt;
+        position.y += v.y*levelMod*speed*dt;
     }
 
     @Override

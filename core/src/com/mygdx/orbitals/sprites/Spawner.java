@@ -33,7 +33,6 @@ public class Spawner extends BouncingObject {
         if (hasFirstOrb) {
             if (currentTime > enemyTime) {
                 enemyTime = currentTime + Math.random() + 1;
-                System.out.println(currentTime / 600);
                 new Enemy(position);
             }
         }

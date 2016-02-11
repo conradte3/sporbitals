@@ -40,24 +40,29 @@ public abstract class GameObject {
         GameStateManager.getCurrent().addGameObject(this);
     }
 
+    //Called every frame, dt is change in time since last frame
     public void update(float dt) {
-        bounds.setPosition(position);
+        bounds.setPosition(position); //center collision circle on position
     }
 
+    //Called every frame
     public void render(SpriteBatch sb) {
         sb.begin();
         sb.draw(sprite, position.x - sprite.getWidth() / 2, position.y - sprite.getHeight() / 2, sprite.getWidth() * scale, sprite.getHeight() * scale);
         sb.end();
     }
 
+    //Called when destroyed
     public void dispose() {
         sprite.dispose();
     }
 
+    //Called when this collides with another GameObject
     public void onCollision(GameObject other) {
 
     }
 
+    //Removes this object from the current State
     public void destroy() {
         GameStateManager.getCurrent().removeGameObject(this);
     }

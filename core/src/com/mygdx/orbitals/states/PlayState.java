@@ -1,9 +1,13 @@
 package com.mygdx.orbitals.states;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.mygdx.orbitals.GdxOrbitals;
 import com.mygdx.orbitals.helpers.Constants;
 import com.mygdx.orbitals.sprites.BouncingObject;
@@ -42,6 +46,18 @@ public class PlayState extends State {
         super.start();
         new Center();
         new Spawner();
+        offset = new Vector2(Gdx.input.getAccelerometerX(), Gdx.input.getAccelerometerY());
+
+        tiltCalibration = new Vector3(
+                Gdx.input.getAccelerometerX(),
+                Gdx.input.getAccelerometerY(),
+                Gdx.input.getAccelerometerZ() );
+
+        Vector3 tmp = new Vector3(0, 0, 1);
+        Vector3 tmp2 = new Vector3(tiltCalibration).nor();
+        Quaternion rotateQuaternion = new Quaternion().setFromCross(tmp, tmp2);
+        Matrix4 m = new Matrix4(Vector3.Zero, rotateQuaternion, new Vector3(1f, 1f, 1f));
+        calibrationMatrix = m.inv();
     }
 
     @Override
@@ -51,6 +67,9 @@ public class PlayState extends State {
         checkCollisions();
         score += dt;
 
+        if (Gdx.input.justTouched()) {
+            Gdx.app.log("Compass", "X: " + Math.round(Gdx.input.getRoll()) + " Y: " + Math.round(Gdx.input.getPitch()) + " Z: " + Math.round(Gdx.input.getAzimuth()));
+        }
         //        //Objects that die in collisions
 //        List<GameObject> deadObjects = new ArrayList<GameObject>();
 //

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.mygdx.orbitals.GdxOrbitals;
 import com.mygdx.orbitals.helpers.Constants;
 import com.mygdx.orbitals.states.GameStateManager;
@@ -38,7 +39,7 @@ public class Center extends GameObject {
     private List<Orbital> orbitals;
 
     public Center() {
-        super(new Texture(Constants.CENTER_IMG));
+        super(new Vector2(GdxOrbitals.WIDTH / 2f, GdxOrbitals.HEIGHT / 2f), new Texture(Constants.CENTER_IMG));
         level = 0;
         radius = 128 * scale;
         angle = 0;
@@ -53,7 +54,7 @@ public class Center extends GameObject {
         int controls = State.getControls();
 
         if (controls == 2) { //tilt
-            speed = -75;
+            speed = -2.5f;
             Vector2 tilt = GameStateManager.getCurrent().getTilt();
             position.x += tilt.x * speed;
             position.y += tilt.y * speed;
@@ -107,7 +108,7 @@ public class Center extends GameObject {
         }
 
         //update sporbitals
-        incBy = - (float) Orbital.getPowerMod() * 0.7f / (level * 3 + 5);
+        incBy = -0.7f / (level * 3 + 5);
         angle += incBy * 60 * dt;
 
         if (orbAdded) {
@@ -129,7 +130,6 @@ public class Center extends GameObject {
                 }*/
             }
         }
-        updateOrbs();
 
         //Stop at screen borders
         if (position.x > GdxOrbitals.WIDTH) {
@@ -144,13 +144,16 @@ public class Center extends GameObject {
         if (position.y < 0) {
             position.y = 0;
         }
+
+        updateOrbs();
     }
 
     private void updateOrbs() {
         for (Orbital orb : orbitals) {
-            float x = (float) (position.x + Math.cos(angle + orb.getAngleOffset()) * radius);
-            float y = (float) (position.y + Math.sin(angle + orb.getAngleOffset()) * radius);
-            orb.setPosition(new Vector2(x, y));
+            orb.updatePosition(position, angle, radius);
+            //float x = (float) (position.x + Math.cos(angle + orb.getAngleOffset()) * radius);
+            //float y = (float) (position.y + Math.sin(angle + orb.getAngleOffset()) * radius);
+            //orb.setPosition(new Vector2(x, y));
         }
     }
 
