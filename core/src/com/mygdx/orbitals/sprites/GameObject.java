@@ -18,7 +18,6 @@ public abstract class GameObject {
     protected Vector2 position;
     protected Texture sprite;
     protected Circle bounds;
-    protected float scale = GdxOrbitals.WIDTH / 450f;
 
 
     public GameObject() {
@@ -36,7 +35,7 @@ public abstract class GameObject {
     public GameObject(Vector2 position, Texture sprite) {
         this.position = new Vector2(position);
         this.sprite = sprite;
-        bounds = new Circle(position.x, position.y, sprite.getWidth() * scale / 3);
+        bounds = new Circle(position.x, position.y, sprite.getWidth() / 3);
         GameStateManager.getCurrent().addGameObject(this);
     }
 
@@ -48,7 +47,7 @@ public abstract class GameObject {
     //Called every frame
     public void render(SpriteBatch sb) {
         sb.begin();
-        sb.draw(sprite, position.x - sprite.getWidth() / 2, position.y - sprite.getHeight() / 2, sprite.getWidth() * scale, sprite.getHeight() * scale);
+        sb.draw(sprite, position.x - sprite.getWidth() / 2, position.y - sprite.getHeight() / 2, sprite.getWidth(), sprite.getHeight());
         sb.end();
     }
 

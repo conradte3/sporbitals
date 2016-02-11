@@ -19,7 +19,7 @@ import java.util.List;
 public class Center extends GameObject {
     final int UP = 1, DOWN = -1;
     final double MAX_DIST = GdxOrbitals.HEIGHT / 2;
-    final double MAX_RADIUS = 128 * scale;
+    final double MAX_RADIUS = 128;
 
     private int level;
 
@@ -41,7 +41,7 @@ public class Center extends GameObject {
     public Center() {
         super(new Vector2(GdxOrbitals.WIDTH / 2f, GdxOrbitals.HEIGHT / 2f), new Texture(Constants.CENTER_IMG));
         level = 0;
-        radius = 128 * scale;
+        radius = 128;
         angle = 0;
         incBy = -10f;
         orbitals = new ArrayList<Orbital>();
@@ -112,8 +112,8 @@ public class Center extends GameObject {
         angle += incBy * 60 * dt;
 
         if (orbAdded) {
-            radius = (radius + 128 * scale) / 2;
-            orbAdded = radius < 128 * scale;
+            radius = (radius + 128) / 2;
+            orbAdded = radius < 128;
         } else {
             if (PowerUp.isActive) {
                 radius = MAX_RADIUS;
@@ -121,9 +121,9 @@ public class Center extends GameObject {
                 /*Spawner spawner = (Spawner)GameStateManager.getCurrent().getElements(Spawner.class).get(0);
                 double dist = Math.hypot(position.x - spawner.getPosition().x, position.y - spawner.getPosition().y);
                 dist = Math.min(dist, MAX_DIST);
-                radius -= dt * 40 / level * Math.cos((dist / MAX_DIST) * Math.PI) * scale;
+                radius -= dt * 40 / level * Math.cos((dist / MAX_DIST) * Math.PI);
 
-                if (radius <= 32 * scale) {
+                if (radius <= 32) {
                     changeLevel(UP);
                 } else if (radius >= MAX_RADIUS) {
                     radius = MAX_RADIUS;
