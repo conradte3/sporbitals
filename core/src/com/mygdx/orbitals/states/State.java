@@ -1,6 +1,7 @@
 package com.mygdx.orbitals.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,10 +10,21 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.orbitals.GdxOrbitals;
 import com.mygdx.orbitals.helpers.Constants;
-import com.mygdx.orbitals.sprites.GameObject;
 import com.mygdx.orbitals.helpers.MyGestureListener;
+import com.mygdx.orbitals.sprites.Button;
+import com.mygdx.orbitals.sprites.GameObject;
 import com.mygdx.orbitals.helpers.PolyList;
 
 import java.util.ArrayList;
@@ -35,6 +47,12 @@ public abstract class State {
     protected static int controls = 0;
     FPSLogger logger;
     private Vector3 tempVec;
+    private boolean paused;
+
+    protected Skin skin;
+    protected Stage stage;
+
+    protected Table table;
 
     Vector3 tiltCalibration;
     Matrix4 calibrationMatrix;
@@ -56,32 +74,87 @@ public abstract class State {
         cam.setToOrtho(false, GdxOrbitals.WIDTH, GdxOrbitals.HEIGHT);
         background = bg;
         tempVec = new Vector3();
+        paused = false;
 
         tiltCalibration = new Vector3();
         calibrationMatrix = new Matrix4();
     }
 
     protected void start() {
-        Gdx.input.setInputProcessor(new GestureDetector(new MyGestureListener()));
+        /*skin = new Skin(Gdx.files.internal("uiskin.json"));
+        stage = new Stage(new ScreenViewport());
+        table = new Table();
+        table.setWidth(stage.getWidth());
+        table.align(Align.center | Align.top);
+
+        table.setPosition(0, Gdx.graphics.getHeight());
+
+        stage.addActor(table);
+
+        final TextButton button = new TextButton("Click me", skin, "default");
+        button.setWidth(200);
+        button.setHeight(50);
+
+        final Dialog dialog = new Dialog("Click Message", skin);
+
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                dialog.show(stage);
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        dialog.hide();
+                    }
+                }, 1);
+            }
+        });
+        stage.addActor(button);
+
+        Gdx.input.setInputProcessor(new InputMultiplexer(new GestureDetector(new MyGestureListener()), stage));
+
+        /*table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+
+        table.setDebug(true);
+
+        //TextButton button1 = new TextButton("Button 1", );
+        //table.add(button1);*/
     }
 
     //Complete state's operations for each frame, where dt is the time that has passed since the last frame
     public void update(float dt, SpriteBatch batch) {
-        handleInput();
-
-        for (GameObject go : gameObjects) {
-            go.update(dt);
-            go.render(batch);
+        if (Gdx.input.justTouched()) {
+            for (GameObject go : getElements(Button.class)) {
+                Button button = (Button)go;
+                button.checkPressed(mouse);
+            }
         }
 
-        timePassed += dt;
+        if (!paused) {
+            handleInput();
+
+            for (GameObject go : gameObjects) {
+                go.update(dt);
+                go.render(batch);
+            }
+
+            timePassed += dt;
+        } else {
+            for (GameObject go : gameObjects) {
+                go.render(batch);
+            }
+        }
     }
 
     public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(cam.combined);
         sb.begin();
         sb.draw(background, 0, 0, GdxOrbitals.WIDTH, GdxOrbitals.HEIGHT);
         sb.end();
+        sb.setProjectionMatrix(cam.combined);
+        //stage.act(Gdx.graphics.getDeltaTime());
+        //stage.draw();
     }
 
     public void dispose() {
@@ -90,6 +163,7 @@ public abstract class State {
         }
 
         background.dispose();
+        stage.dispose();
     }
 
     //Determine results of inputs in current state
@@ -151,5 +225,13 @@ public abstract class State {
 
     public double getTimePassed() {
         return timePassed;
+    }
+
+    public void setPaused(boolean pause) {
+        paused = pause;
+    }
+
+    public void togglePaused() {
+        setPaused(!paused);
     }
 }

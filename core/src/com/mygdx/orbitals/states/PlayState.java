@@ -8,20 +8,19 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.orbitals.GdxOrbitals;
 import com.mygdx.orbitals.helpers.Constants;
 import com.mygdx.orbitals.sprites.BouncingObject;
 import com.mygdx.orbitals.sprites.Center;
-import com.mygdx.orbitals.sprites.Enemy;
 import com.mygdx.orbitals.sprites.GameObject;
 import com.mygdx.orbitals.sprites.Orbital;
-import com.mygdx.orbitals.sprites.PowerUp;
+import com.mygdx.orbitals.sprites.Particle;
 import com.mygdx.orbitals.sprites.Spawner;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javafx.util.Pair;
 
 /**
  * Created by Conrad on 10/17/2015.
@@ -34,6 +33,8 @@ public class PlayState extends State {
 
     protected BitmapFont font;
     protected float score;
+
+    protected TextButton pauseButton;
 
     public PlayState() {
         super(new Texture(Constants.BACKGROUND_IMG));
@@ -58,6 +59,20 @@ public class PlayState extends State {
         Quaternion rotateQuaternion = new Quaternion().setFromCross(tmp, tmp2);
         Matrix4 m = new Matrix4(Vector3.Zero, rotateQuaternion, new Vector3(1f, 1f, 1f));
         calibrationMatrix = m.inv();
+
+
+        pauseButton = new TextButton("Pause", skin);
+
+        pauseButton.addListener(new ChangeListener() {
+            public void changed(ChangeEvent event, Actor actor) {
+                GameStateManager.getCurrent().togglePaused();
+            }
+        });
+
+        //pauseButton.pad(30);
+        table.padTop(GdxOrbitals.HEIGHT);
+        //table.padLeft(GdxOrbitals.WIDTH - 100);
+        //table.add(pauseButton);
     }
 
     @Override
@@ -65,7 +80,6 @@ public class PlayState extends State {
         render(batch);
         super.update(dt, batch);
         checkCollisions();
-        score += dt;
 
         if (Gdx.input.justTouched()) {
             Gdx.app.log("Compass", "X: " + Math.round(Gdx.input.getRoll()) + " Y: " + Math.round(Gdx.input.getPitch()) + " Z: " + Math.round(Gdx.input.getAzimuth()));
@@ -121,6 +135,10 @@ public class PlayState extends State {
             }
         }
         clearDead();
+    }
+
+    public void addScore(float increase) {
+        score += increase;
     }
 }
 

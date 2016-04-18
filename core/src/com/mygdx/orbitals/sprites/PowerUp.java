@@ -14,7 +14,7 @@ public class PowerUp extends BouncingObject {
     private double startTime = -1;
 
     PowerUp() {
-        super(new Vector2((int)(Math.random()*GdxOrbitals.WIDTH), (int)(Math.random()*GdxOrbitals.HEIGHT)), new Texture(Constants.POWERUP_IMG), new Vector2(0, 0));
+        super(new Vector2((int)(Math.random()*GdxOrbitals.WIDTH), (int)(Math.random()*GdxOrbitals.HEIGHT)), new Texture(Constants.SPAWNER_IMG), new Vector2(0, 0));
     }
 
     @Override
@@ -34,7 +34,7 @@ public class PowerUp extends BouncingObject {
                         }
                     } else {
                         for (GameObject enemy : GameStateManager.getCurrent().getElements(Enemy.class)) {
-                            enemy.setSprite(new Texture(Constants.ENEMY2_IMG));
+                            //enemy.setSprite(new Texture(Constants.ENEMY2_IMG));
                         }
                     }
                 }
@@ -48,7 +48,7 @@ public class PowerUp extends BouncingObject {
         sprite = new Texture(Constants.DEFAULT_IMG);
 
         for (GameObject enemy : GameStateManager.getCurrent().getElements(Enemy.class)) {
-            enemy.setSprite(new Texture(Constants.ENEMY2_IMG));
+            //enemy.setSprite(new Texture(Constants.ENEMY2_IMG));
         }
 
         for (GameObject power : GameStateManager.getCurrent().getElements(PowerUp.class)) {
@@ -64,7 +64,7 @@ public class PowerUp extends BouncingObject {
         }
 
         for (GameObject power : GameStateManager.getCurrent().getElements(PowerUp.class)) {
-            power.setSprite(new Texture(Constants.POWERUP_IMG));
+            //power.setSprite(new Texture(Constants.POWERUP_IMG));
         }
 
         destroy();

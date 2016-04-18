@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by Conrad on 10/23/2015.
  */
-public abstract class GameObject {
+public class GameObject {
     protected Vector2 position;
     protected Texture sprite;
     protected Circle bounds;

@@ -2,6 +2,7 @@ package com.mygdx.orbitals.sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -17,9 +18,9 @@ import java.util.List;
  * Created by Conrad on 10/23/2015.
  */
 public class Center extends GameObject {
-    final int UP = 1, DOWN = -1;
-    final double MAX_DIST = GdxOrbitals.HEIGHT / 2;
-    final double MAX_RADIUS = 128;
+    private final int UP = 1, DOWN = -1;
+    private double MAX_DIST = GdxOrbitals.HEIGHT / 2;
+    private final double MAX_RADIUS = 128;
 
     private int level;
 
@@ -28,6 +29,11 @@ public class Center extends GameObject {
     private float incBy;
     private boolean orbAdded;
     private double speed = 1;
+    private Vector2 direction;
+    private Vector2 prevMousePos;
+    private final Vector2 invalid = new Vector2(-1, -1);
+    private Vector2 totalDistance = Vector2.Zero;
+    private float totalTime = 0;
 
 
     //NEW MOVEMENT STUFF
@@ -46,6 +52,8 @@ public class Center extends GameObject {
         incBy = -10f;
         orbitals = new ArrayList<Orbital>();
         point = position;
+        direction = Vector2.Zero;
+        prevMousePos = invalid;
     }
 
     @Override
@@ -58,6 +66,42 @@ public class Center extends GameObject {
             Vector2 tilt = GameStateManager.getCurrent().getTilt();
             position.x += tilt.x * speed;
             position.y += tilt.y * speed;
+        } else if (controls == 4) { //fling
+            Vector2 mouse = GameStateManager.getCurrent().getMouse();
+            Vector2 distance = new Vector2();
+
+            if (Gdx.input.isTouched()) {
+                if (!prevMousePos.equals(invalid)) {
+                    distance = new Vector2(mouse.x - prevMousePos.x, mouse.y - prevMousePos.y);
+                    totalDistance.x += distance.x;
+                    totalDistance.y += distance.y;
+                    totalTime += dt;
+                }
+
+                if (totalTime >= 0.1) {
+                    Vector2 velocity = new Vector2(totalDistance.x / totalTime, totalDistance.y / totalTime);
+                    float magnitude = Vector2.len(velocity.x, velocity.y);
+                    if (direction.equals(Vector2.Zero) && magnitude > 0) {
+                        direction = velocity.nor();
+                    }
+                    speed = 0.001*magnitude;//0.3*Math.pow(Math.log10(magnitude + 1), 3);
+                    totalDistance = Vector2.Zero;
+                    totalTime = 0;
+                }
+                prevMousePos = new Vector2(mouse);
+            } else {
+                prevMousePos = invalid;
+                direction = Vector2.Zero;
+
+                if (speed > 0) {
+                    speed -= 0.05;
+                } else {
+                    speed = 0;
+                }
+            }
+
+            position.x += direction.x * speed;
+            position.y += direction.y * speed;
         } else {
             speed = 0.04;
             //update position based on input
@@ -197,7 +241,6 @@ public class Center extends GameObject {
             if (level == 1) {
                 spawner.setHasFirstOrb(true);
             }
-            spawner.setBoundaryHeight(GdxOrbitals.HEIGHT * (5 - level) / 5f);
             addOrbital();
         } else {
             removeOrbital(orbID);
@@ -242,5 +285,16 @@ public class Center extends GameObject {
                 GameStateManager.remove();
             }
         }
+    }
+
+    public void handleGestureInput(float velocityX, float velocityY, int button) {
+        Gdx.app.log("Gesture", "Fling, velocityX: " + velocityX + ", velocityY: " + velocityY + ", button: " + button);
+        /*if (State.getControls() == 4) {
+            float magnitude = (float)Math.hypot(velocityX, velocityY);
+            if (magnitude > 0) {
+                direction = new Vector2(velocityX / magnitude, -velocityY / magnitude);
+            }
+            speed = 0.3*Math.pow(Math.log10(magnitude + 1), 3);
+        }*/
     }
 }

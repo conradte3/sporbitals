@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Conrad on 10/17/2015.
  */
-public class Particle {
+public class Particle extends GameObject {
     /*private final int SPEED = 10;
 
     private Vector2 position;

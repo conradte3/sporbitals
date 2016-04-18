@@ -10,7 +10,7 @@ import com.mygdx.orbitals.states.GameStateManager;
 /**
  * Created by Conrad on 11/3/2015.
  */
-public class Spawner extends BouncingObject {
+public class Spawner extends Enemy {
     private boolean hasFirstOrb = false;
     private double enemyTime = 0;
     private double orbTime = 0;
@@ -20,8 +20,9 @@ public class Spawner extends BouncingObject {
     }
 
     public Spawner(Vector2 position) {
-        super(position, new Texture(Constants.SPAWNER_IMG), new Vector2(0, -0.5f).rotateRad((float)(Math.random()*(Math.PI / 2f))), new Rectangle(0, GdxOrbitals.HEIGHT * 0.8f, GdxOrbitals.WIDTH, GdxOrbitals.HEIGHT));
+        super(position, new Texture(Constants.SPAWNER_IMG), new Vector2(0, -0.5f).rotateRad((float)(Math.random()*(Math.PI / 2f))), new Rectangle(0, GdxOrbitals.HEIGHT * 0.6f, GdxOrbitals.WIDTH, GdxOrbitals.HEIGHT));
         new FreeOrbital(position);
+        health = 10000;
     }
 
     @Override
@@ -32,7 +33,7 @@ public class Spawner extends BouncingObject {
         //Spawn enemies
         if (hasFirstOrb) {
             if (currentTime > enemyTime) {
-                enemyTime = currentTime + Math.random() + 1;
+                enemyTime = currentTime + 1.5*Math.random() + 1;
                 new Enemy(position);
             }
         }
@@ -55,9 +56,5 @@ public class Spawner extends BouncingObject {
 
     public void setHasFirstOrb(boolean hasFirstOrb) {
         this.hasFirstOrb = hasFirstOrb;
-    }
-
-    public void setBoundaryHeight(float height) {
-        boundaries.set(boundaries.getX(), height, boundaries.getWidth(), boundaries.getHeight());
     }
 }
