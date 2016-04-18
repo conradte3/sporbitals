@@ -59,20 +59,6 @@ public class PlayState extends State {
         Quaternion rotateQuaternion = new Quaternion().setFromCross(tmp, tmp2);
         Matrix4 m = new Matrix4(Vector3.Zero, rotateQuaternion, new Vector3(1f, 1f, 1f));
         calibrationMatrix = m.inv();
-
-
-        pauseButton = new TextButton("Pause", skin);
-
-        pauseButton.addListener(new ChangeListener() {
-            public void changed(ChangeEvent event, Actor actor) {
-                GameStateManager.getCurrent().togglePaused();
-            }
-        });
-
-        //pauseButton.pad(30);
-        table.padTop(GdxOrbitals.HEIGHT);
-        //table.padLeft(GdxOrbitals.WIDTH - 100);
-        //table.add(pauseButton);
     }
 
     @Override

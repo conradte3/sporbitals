@@ -26,43 +26,12 @@ public class MenuState extends State {
     @Override
     protected void start() {
         super.start();
-        //startButton = new TextButton("Play", skin);
-        //quitButton = new TextButton("Quit like a scrub", skin);
 
         Button testButton = new Button(new Vector2(GdxOrbitals.WIDTH / 2, GdxOrbitals.HEIGHT / 2), new Texture(Constants.CENTER_IMG)) {
             @Override
             public void press() {
-                Gdx.app.log("Button", "hello");
                 GameStateManager.add(new PlayState());
             }
         };
-
-        /*startButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                GameStateManager.add(new PlayState());
-                event.stop();
-            }
-        });
-
-        quitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-                event.stop();
-            }
-        });
-
-        startButton.pad(50);
-        startButton.padLeft(100);
-        startButton.padRight(100);
-
-        quitButton.pad(50);
-
-        table.padTop(GdxOrbitals.HEIGHT / 3f);
-
-        table.add(startButton);
-        table.row();
-        table.add(quitButton);*/
     }
 }

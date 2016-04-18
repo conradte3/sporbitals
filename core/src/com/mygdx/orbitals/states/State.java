@@ -81,46 +81,7 @@ public abstract class State {
     }
 
     protected void start() {
-        /*skin = new Skin(Gdx.files.internal("uiskin.json"));
-        stage = new Stage(new ScreenViewport());
-        table = new Table();
-        table.setWidth(stage.getWidth());
-        table.align(Align.center | Align.top);
 
-        table.setPosition(0, Gdx.graphics.getHeight());
-
-        stage.addActor(table);
-
-        final TextButton button = new TextButton("Click me", skin, "default");
-        button.setWidth(200);
-        button.setHeight(50);
-
-        final Dialog dialog = new Dialog("Click Message", skin);
-
-        button.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dialog.show(stage);
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        dialog.hide();
-                    }
-                }, 1);
-            }
-        });
-        stage.addActor(button);
-
-        Gdx.input.setInputProcessor(new InputMultiplexer(new GestureDetector(new MyGestureListener()), stage));
-
-        /*table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
-
-        table.setDebug(true);
-
-        //TextButton button1 = new TextButton("Button 1", );
-        //table.add(button1);*/
     }
 
     //Complete state's operations for each frame, where dt is the time that has passed since the last frame
